@@ -122,6 +122,50 @@ class Article < Content
 
   end
 
+  def merge_articles(article_id)
+    article1 = self
+    article2 = Article.find_by_id(article_id)
+    new_article = Article.get_or_build_article
+    new_article.author = article1.author
+    new_article.user_id = article1.user_id
+    new_article.body = article1.body + '\n\n' + article2.body
+    new_article.title = article1.title
+    new_article.published = true
+    new_article.allow_pings = true
+    new_article.state = "published" 
+    new_article.save   
+
+    if article1.allow_comments 
+      commentsOnFirstArticle = Comment.find(:all, :conditions => { :article_id => article_id })
+      if !commentsOnFirstArticle.nil?
+        for comment in commentsOnFirstArticle
+          #update article_id to new one
+          comment.update_attribute(:article_id,  new_article.id)
+        end
+      end
+    end
+    if article2.allow_comments
+      commentsOnSecondArticle = Comment.find(:all, :conditions => { :article_id => article_id })
+      if !commentsOnSecondArticle.nil?
+        for comment in commentsOnSecondArticle
+          #update article_id to new one
+          comment.update_attribute(:article_id,  new_article.id)
+        end
+      end
+    end
+    
+    new_article.save
+    
+    article1.destroy
+    article2.destroy
+    
+    return new_article
+  end
+
+  def stripped_title
+    remove_accents(title).gsub(/<[^>]*>/, '').to_url
+  end
+
   def year_url
     published_at.year.to_s
   end

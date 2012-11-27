@@ -180,6 +180,21 @@ describe Admin::ContentController do
     end
   end
 
+  describe 'merge articles an admin' do
+    it 'should not let a non admin user merge articles' do
+      Factory(:blog)
+      first_fake_article = mock('Article')
+      first_fake_article.stub(:id).and_return('1')
+      second_fake_article = mock('Article')
+      second_fake_article.stub(:id).and_return('2')
+      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_publisher))
+      request.session = {:user => @user.id}
+      User.stub(:admin?).and_return('false')
+      flash[:error].should_not be_nil
+      post :controller => "admin/content", :action => "merge", :current_article_id => '1' , :article_to_merge_with => {:id => '2'}
+    end
+  end
+
   describe 'insert_editor action' do
 
     before do
