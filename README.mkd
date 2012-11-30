@@ -47,8 +47,10 @@ that its test suite passes, and do a test deployment to Heroku.
     our fork of the Typo repository.  From within your copy of the Typo
     repository, run:
 
-        heroku create git push heroku master heroku run rake db:migrate heroku
-        run rake db:seed
+        heroku create
+        git push heroku master
+        heroku run rake db:migrate
+        heroku run rake db:seed
 
 ### Specify features
 
