@@ -1,5 +1,5 @@
 require 'net/http'
-require './app/models/content.rb'
+require 'content.rb'
 
 class TextFilter < ActiveRecord::Base
   serialize :filters
