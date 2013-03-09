@@ -4,3 +4,14 @@
   <%= render :partial => "form" %>
 
 <% end %>
+
+<% if @article.id %>
+  <% if User.find_by_id(current_user.id).profile_id == 1 %>
+    <%= form_tag :action => 'merge', :id => @article.id do %>
+      <h3>Merge Articles</h3>
+      Article ID <%= text_field_tag 'merge_with' %>
+      <br>
+      <%= submit_tag "Merge" %>
+    <% end %>
+  <% end %>
+<% end %>
