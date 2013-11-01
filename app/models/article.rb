@@ -80,6 +80,15 @@ class Article < Content
     Article.exists?({:parent_id => self.id})
   end
 
+  def merge_with(merge_id)
+    merge_article = Article.find(merge_id)
+    new_body = self.body + "\n\n" + merge_article.body
+    new_article = Article.create(:title => self.title, :author => self.author, :body => new_body, :guid => 99)
+    @article = new_article
+    debugger
+    1+1
+  end
+
   attr_accessor :draft, :keywords
 
   has_state(:state,

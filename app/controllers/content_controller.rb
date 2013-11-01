@@ -33,4 +33,10 @@ class ContentController < ApplicationController
   def theme_layout
     this_blog.current_theme.layout(self.action_name)
   end
+
+  def merge_with
+    article_id = params[:id]
+    merge_id = params[:merge_id]
+    Article.find(article_id).merge_with(merge_id)
+  end
 end
