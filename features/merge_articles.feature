@@ -6,3 +6,5 @@ Feature: Non-Admin can't merge Articles
   Background:
     Given the blog is set up
     And I am logged into the admin panel
+
+  Scenario: Restrict access to merge feature
