@@ -36,7 +36,7 @@ Given /^the blog is set up$/ do
                                    :base_url => 'http://localhost:3000'});
   Blog.default.save!
   User.create!({:login => 'admin',
-                :password => 'aaaaaaaa',
+                :password => 'aaaaaa',
                 :email => 'joe@snow.com',
                 :profile_id => 1,
                 :name => 'admin',
@@ -55,10 +55,10 @@ And /^there are (.*) users set up$/ do |count|
   end
 end
 
-And /^I am logged into the admin panel$/ do
+And /^I am logged as "(.*)" with "(.*)"$/ do |user, pass|
   visit '/accounts/login'
-  fill_in 'user_login', :with => 'admin'
-  fill_in 'user_password', :with => 'aaaaaaaa'
+  fill_in 'user_login', :with => user
+  fill_in 'user_password', :with => pass
   click_button 'Login'
   if page.respond_to? :should
     page.should have_content('Login successful')
@@ -67,22 +67,10 @@ And /^I am logged into the admin panel$/ do
   end
 end
 
-And /^I am logged as non-admin user into the admin panel$/ do
-  visit '/accounts/login'
-  fill_in 'user_login', :with => 'user1'
-  fill_in 'user_password', :with => '111111'
-  click_button 'Login'
-  if page.respond_to? :should
-    page.should have_content('Login successful')
-  else
-    assert page.has_content?('Login successful')
-  end
-end
-
-Given /^there "(.*?)" has "(.*?)" article created$/ do |arg1, arg2|
+Given /^"(.*?)" has "(.*?)" article created$/ do |user, title|
   Article.create!({
-      title:   arg2,
-      user_id: arg1
+      title:   title,
+      user_id: user
     })
 end
 

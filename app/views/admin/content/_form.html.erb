@@ -16,7 +16,7 @@
     <div class='clearfix'>
         <%= _("Status:") %> <strong><%= @article.state.to_s.downcase %></strong> <a href="#" onclick="Element.toggle('status'); return false">Change</a>
       <ul class='inputs-list'>
-        <li id='status' style='display: none;'>        
+        <li id='status' style='display: none;'>
           <label for="article_published">
             <%= check_box 'article', 'published'  %>
             <%= _("Published") %>
@@ -129,7 +129,7 @@
     <div class='class'>
       <%= text_field 'article', 'keywords', {:autocomplete => 'off', :style => 'width: 100%'} %>
     </div>
-    <%= auto_complete_field 'article_keywords', { :url => { :action => "auto_complete_for_article_keywords"}, :tokens => ','}%>		
+    <%= auto_complete_field 'article_keywords', { :url => { :action => "auto_complete_for_article_keywords"}, :tokens => ','}%>
   </div>
 
   <div class='separator'>
@@ -146,7 +146,14 @@
     <ul id='attachments' class='inputs-list'>
       <%= render 'admin/content/attachment', { :attachment_num => 1, :hidden => false } -%>
     </ul>
-  </div>    
+  </div>
+
+  <div class='separator'>
+    <h4><%= _("Merge Articles") %></h4>
+    <div class=''>
+      ...
+    </div>
+  </div>
   </div>
 
 </div>
