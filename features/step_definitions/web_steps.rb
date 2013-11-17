@@ -43,6 +43,18 @@ Given /^the blog is set up$/ do
                 :state => 'active'})
 end
 
+And /^there are (.*) users set up$/ do |count|
+  count.to_i.times do |index|
+    user_index = index + 1
+    User.create!({:login => "user#{user_index}",
+              :password => 6.times.map{user_index}.join,
+              :email => "user#{user_index}@snow.com",
+              :profile_id => 2,
+              :name => "user#{user_index}",
+              :state => 'active'})
+  end
+end
+
 And /^I am logged into the admin panel$/ do
   visit '/accounts/login'
   fill_in 'user_login', :with => 'admin'
@@ -53,6 +65,25 @@ And /^I am logged into the admin panel$/ do
   else
     assert page.has_content?('Login successful')
   end
+end
+
+And /^I am logged as non-admin user into the admin panel$/ do
+  visit '/accounts/login'
+  fill_in 'user_login', :with => 'user1'
+  fill_in 'user_password', :with => '111111'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+Given /^there "(.*?)" has "(.*?)" article created$/ do |arg1, arg2|
+  Article.create!({
+      title:   arg2,
+      user_id: arg1
+    })
 end
 
 # Single-line step scoper
@@ -250,7 +281,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
     end
   end
 end
- 
+
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
@@ -264,8 +295,8 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')} 
-  
+  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+
   if actual_params.respond_to? :should
     actual_params.should == expected_params
   else

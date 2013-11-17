@@ -5,6 +5,10 @@ Feature: Non-Admin can't merge Articles
 
   Background:
     Given the blog is set up
-    And I am logged into the admin panel
+    And there are 2 users set up
+    And there "user1" has "Test Page" article created
+    And I am logged as non-admin user into the admin panel
 
   Scenario: Restrict access to merge feature
+    Given I am on the edit article "Test Page" page
+    Then I should not see "Merge Articles"
