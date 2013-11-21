@@ -2,5 +2,4 @@
 
 <%= render "admin/shared/edit", { :form_type => "article", :form_action => { :action => "new", :id => @article.id , :class => ('autosave')} } %>
 
-<%= render "admin/content/merge" if @article.id%>
-<%= params.inspect %>
+<%= render "admin/content/merge" if @article.id && User.find(session[:user_id]).admin? %>
