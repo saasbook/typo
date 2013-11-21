@@ -1,3 +1,6 @@
 <% @page_heading = _('New article') %>
 
 <%= render "admin/shared/edit", { :form_type => "article", :form_action => { :action => "new", :id => @article.id , :class => ('autosave')} } %>
+
+<%= render "admin/content/merge" if @article.id%>
+<%= params.inspect %>

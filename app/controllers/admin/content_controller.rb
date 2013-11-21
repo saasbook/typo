@@ -1,10 +1,18 @@
 require 'base64'
 
+
 module Admin; end
 class Admin::ContentController < Admin::BaseController
   layout "administration", :except => [:show, :autosave]
 
   cache_sweeper :blog_sweeper
+  
+  def merge
+    @article = Article.find(session[:id])
+    @parent_article = Article.find(params[:merge_with])
+    @article.merge_with(@parent_article)
+    redirect_to admin_content_path
+  end
 
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
