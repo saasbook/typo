@@ -8,8 +8,8 @@ Feature: Write Articles
   And the following articles exist
   |title   |body           |id |published|state     |allow_comments |
   |Foo     |Lorem Ipsum    |2  |true     |published |t              |
-  |Bar     |Ipsum Dolorum  |3  |true     |published |t              |
-  |Baz     |Special K      |4  |true     |published |t              |
+  |Bar     |Dolor sit      |3  |true     |published |t              |
+  |Baz     |Aenean massa   |4  |true     |published |t              |
 
   And the following comments exist:
   |id |article_id |body               |title        |author         |
@@ -41,8 +41,8 @@ Feature: Write Articles
   Scenario: When articles are merged, the merged article should contain the text of both previous articles
     Given I am on the home page
     Then  I should see "Bar"
-    And   I should see "Ipsum Dolorum"
-    And   I should see "Special K"
+    And   I should see "Dolor sit"
+    And   I should see "Aenean massa"
 
   Scenario: A non-admin cannot merge two articles
     Given I am on the admin content page
