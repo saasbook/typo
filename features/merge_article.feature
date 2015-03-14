@@ -37,7 +37,7 @@ Feature: Merge Articles
 
 	Scenario: Checking if merged articles appear on same page
 
-	SCenario: Checking if comments appear for merged articles
+	Scenario: Checking if comments appear for merged articles
 
 
 
