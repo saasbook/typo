@@ -80,7 +80,7 @@ class Article < Content
     Article.exists?({:parent_id => self.id})
   end
 
-  attr_accessor :draft, :keywords
+  attr_accessor :draft, :keywords, :merge_with
 
   has_state(:state,
             :valid_states  => [:new, :draft,

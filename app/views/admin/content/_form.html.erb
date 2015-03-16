@@ -149,5 +149,13 @@
   </div>    
   </div>
 
+  <div class=''>
+    <h4>Merge</h4>
+    <%= text_field 'article', 'merge_with' %> 
+    <%= link_to _("Merge Articles"), {:controller => 'admin/content', :action => 'merge' }, :class => 'btn info' %>
+  </div>
+
+
+
 </div>
 
