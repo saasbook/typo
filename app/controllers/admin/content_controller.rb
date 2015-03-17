@@ -140,7 +140,6 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def merge
-    @merge_id = params[:merge_with]
     new_or_edit
   end
   
@@ -148,10 +147,12 @@ class Admin::ContentController < Admin::BaseController
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
-    if params[:merge_with]
-      @merge_article = Article.get_or_build_article(params[:merge_with])
+    if params[:article] && params[:article][:merge_with]
+      debugger  
+      @merge_article = Article.get_or_build_article(params[:article][:merge_with])
       merge_body = @merge_article.body
       @article.body += "\n" + merge_body
+      params[:article][:body] = @article.body
     end
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
 
