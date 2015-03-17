@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 <input type="hidden" name="current_editor" id="current_editor" value="<%= current_user.editor %>" />
 <input type="hidden" name="user_textfilter" id="user_textfilter" value="<%= current_user.text_filter_name %>" />
 <div id="autosave"></div>
@@ -10,13 +11,13 @@
     <h4><%= _("Publish settings") %></h4>
     <div class='actions'>
       <%= link_to_destroy_with_profiles(@article) unless @article.id.nil? or @article.state.to_s.downcase == 'draft' %>
-	  <span id='destroy_link'><%= link_to_destroy_draft @article %></span>
+    <span id='destroy_link'><%= link_to_destroy_draft @article %></span>
       <span id='preview_link'><%= link_to(_("Preview"), {:controller => '/articles', :action => 'preview', :id => @article.id}, {:target => 'new', :class => 'btn info'}) if @article.id %></span>
     </div>
     <div class='clearfix'>
         <%= _("Status:") %> <strong><%= @article.state.to_s.downcase %></strong> <a href="#" onclick="Element.toggle('status'); return false">Change</a>
       <ul class='inputs-list'>
-        <li id='status' style='display: none;'>        
+        <li id='status' style='display: none;'>
           <label for="article_published">
             <%= check_box 'article', 'published'  %>
             <%= _("Published") %>
@@ -41,7 +42,7 @@
         </li>
       </ul>
     </div>
-	  <div class='clearfix'>
+    <div class='clearfix'>
       <%= _("Publish <strong>now</strong>") %> <a href="#" onclick="Element.toggle('publish'); return false">Change</a>
       <ul class='inputs-list'>
         <li id='publish' style='display: none;'>
@@ -100,14 +101,14 @@
     <%= render('images', { :images => @images}) unless @images.empty? %>
 
     <div id='editor-menu'>
-		<ul class="tabs">
-			<li id="f" class='<%= "active" if current_user.editor == 'visual' %>'>
-				<%= build_editor_link("Visual", 'insert_editor', 'fck', 'visual_editor', 'visual') %>
-			</li>
-			<li id="s" class='<%= "active" if current_user.editor == 'simple' %> '>
-				<%= build_editor_link("HTML", 'insert_editor', 'simple', 'simple_editor', 'simple') %>
-			</li>
-		</ul>
+    <ul class="tabs">
+      <li id="f" class='<%= "active" if current_user.editor == 'visual' %>'>
+        <%= build_editor_link("Visual", 'insert_editor', 'fck', 'visual_editor', 'visual') %>
+      </li>
+      <li id="s" class='<%= "active" if current_user.editor == 'simple' %> '>
+        <%= build_editor_link("HTML", 'insert_editor', 'simple', 'simple_editor', 'simple') %>
+      </li>
+    </ul>
     </div>
 
     <div id="editor">
@@ -125,11 +126,11 @@
       </div>
     </div>
 
-		<h4><%= _("Tags") %></h4>
+    <h4><%= _("Tags") %></h4>
     <div class='class'>
       <%= text_field 'article', 'keywords', {:autocomplete => 'off', :style => 'width: 100%'} %>
     </div>
-    <%= auto_complete_field 'article_keywords', { :url => { :action => "auto_complete_for_article_keywords"}, :tokens => ','}%>		
+    <%= auto_complete_field 'article_keywords', { :url => { :action => "auto_complete_for_article_keywords"}, :tokens => ','}%>
   </div>
 
   <div class='separator'>
@@ -146,13 +147,13 @@
     <ul id='attachments' class='inputs-list'>
       <%= render 'admin/content/attachment', { :attachment_num => 1, :hidden => false } -%>
     </ul>
-  </div>    
+  </div>
   </div>
 
   <div class=''>
-    <h4>Merge</h4>
-    <%= text_field 'article', 'merge_with'%> 
-    <%= button_to "Merge Articles", merge_path, method: :post%>
+    <h4>Merge Articles</h4>
+    <%= text_field 'article', 'merge_with'%>
+    <%= button_to "Merge", merge_path, method: :post%>
   </div>
 
 
