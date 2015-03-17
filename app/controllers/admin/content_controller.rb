@@ -147,16 +147,17 @@ class Admin::ContentController < Admin::BaseController
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
-    if params[:article] and params[:article][:merge_with] != ""
+    source_id = params[:input][:merge_with]
+    if params[:article] and source_id != ""
       debugger  
-      if Article.exists?(params[:article][:merge_with])
-        @merge_article = Article.get_or_build_article(params[:article][:merge_with])
+      if Article.exists?(source_id)
+        @merge_article = Article.get_or_build_article(source_id)
         merge_body = @merge_article.body
         merge_comments = @merge_article.comments
         @article.comments += merge_comments
         @article.body += "\n" + merge_body
         params[:article][:body] = @article.body
-        Article.destroy(params[:article][:merge_with])
+        Article.destroy(source_id)
       end
     end
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
