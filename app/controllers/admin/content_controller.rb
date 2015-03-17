@@ -147,7 +147,7 @@ class Admin::ContentController < Admin::BaseController
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
-    if params[:article] && params[:article][:merge_with]
+    if params[:article] and params[:article][:merge_with] != ""
       debugger  
       @merge_article = Article.get_or_build_article(params[:article][:merge_with])
       merge_body = @merge_article.body
