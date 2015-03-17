@@ -151,11 +151,10 @@
   </div>
 
   <div class=''>
-    <h4>Merge Articles</h4>
-    <%= text_field 'input', 'merge_with'%>
-    <%= button_to "Merge", merge_path, method: :post%>
+    <h4>Merge</h4>
+    <%= text_field_tag(:merge_with)%>
+    <%= button_to "Merge Articles", merge_path, method: :post%>
   </div>
-
 
 
 </div>

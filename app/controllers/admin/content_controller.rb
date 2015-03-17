@@ -143,6 +143,15 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+#  def merge
+#    other_article_id = params[:merge_with]
+#    article_id = params[:id]
+#    article = Article.find(article_id)
+#    article.merge(article_id, other_article_id)
+
+#    redirect_to :action => 'edit', :id => article_id
+#  end
+
   def new_or_edit
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
