@@ -92,7 +92,7 @@ class SuperclassArticles < ActiveRecord::Migration
         end
       end
 
-      remove_index :articles, :permalink
+      # remove_index :articles, :permalink
       drop_table :articles
     end
   end

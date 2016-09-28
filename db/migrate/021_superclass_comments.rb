@@ -38,7 +38,7 @@ class SuperclassComments < ActiveRecord::Migration
           end
         end
       end
-      remove_index(:comments, :article_id)
+      # remove_index(:comments, :article_id)
     end
     drop_table :comments
   end
@@ -84,7 +84,7 @@ class SuperclassComments < ActiveRecord::Migration
           BareContent.delete_all "type = 'Comment'"
         end
       end
-      remove_index  :contents, :article_id
+      # remove_index  :contents, :article_id
       remove_column :contents, :article_id
       remove_column :contents, :email
       remove_column :contents, :url

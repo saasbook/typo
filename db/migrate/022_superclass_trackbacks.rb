@@ -14,8 +14,7 @@ class SuperclassTrackbacks < ActiveRecord::Migration
     # is actually there (otherwise Postgres breaks)
     # Comment because already in migration 001
     #add_index(:trackbacks, :article_id) rescue nil
-    modify_tables_and_update([:add_column,   BareContent,   :blog_name, :string],
-                             [:remove_index, BareTrackback, :article_id        ]) do
+    modify_tables_and_update([:add_column,   BareContent,   :blog_name, :string]) do
       BareContent.transaction do
         if not $schema_generator
           BareTrackback.find(:all).each do |tb|
