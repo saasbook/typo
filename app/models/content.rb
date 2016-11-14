@@ -69,14 +69,14 @@ class Content < ActiveRecord::Base
       (changed? && published?) || just_changed_published_status?
     end
   end
-  
+
   def shorten_url
     return unless self.published
-    
+
     r = Redirect.new
     r.from_path = r.shorten
     r.to_path = self.permalink_url
-    
+
     # This because updating self.redirects.first raises ActiveRecord::ReadOnlyRecord
     unless (red = self.redirects.first).nil?
       return if red.to_path == self.permalink_url
@@ -115,6 +115,20 @@ class Content < ActiveRecord::Base
       end
     end
 
+    def dates_to_strings(dates)
+      date_map = {}
+      dates.map! do |d|
+        t = d.publication
+        t = Time.parse(t) if t.is_a?(String)
+        d.publication = t.strftime('%Y-%m')
+        d.freeze
+        if !date_map.has_key?(d.publication)
+          date_map[d.publication] = true
+          d
+        end
+      end
+    end
+
     def find_by_published_at(column_name = :published_at)
       from_where = "FROM #{self.table_name} WHERE #{column_name} is not NULL AND type='#{self.name}'"
 
@@ -132,17 +146,9 @@ class Content < ActiveRecord::Base
         # If we don't have an adapter-safe conversion from date -> YYYY-MM,
         # we'll do the GROUP BY server-side. There won't be very many objects
         # in this array anyway.
-        date_map = {}
         dates = find_by_sql("SELECT #{column_name} AS publication #{from_where}")
 
-        dates.map! do |d|
-          d.publication = Time.parse(d.publication).strftime('%Y-%m')
-          d.freeze
-          if !date_map.has_key?(d.publication)
-            date_map[d.publication] = true
-            d
-          end
-        end
+        dates_to_strings(dates)
         dates.reject!{|d| d.blank? || d.publication.blank?}
         dates.sort!{|a,b| b.publication <=> a.publication}
 
@@ -176,6 +182,8 @@ class Content < ActiveRecord::Base
       list_function
     end
   end
+
+  private_class_method :dates_to_strings
 
   def html_map field
     content_fields.include? field
