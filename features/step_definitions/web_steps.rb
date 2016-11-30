@@ -36,23 +36,42 @@ Given /^the blog is set up$/ do
                                    :base_url => 'http://localhost:3000'});
   Blog.default.save!
   User.create!({:login => 'admin',
-                :password => 'aaaaaaaa',
+                :password => 'aaaaaa',
                 :email => 'joe@snow.com',
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
 end
 
-And /^I am logged into the admin panel$/ do
+And /^there are (.*) users set up$/ do |count|
+  count.to_i.times do |index|
+    user_index = index + 1
+    User.create!({:login => "user#{user_index}",
+              :password => 6.times.map{user_index}.join,
+              :email => "user#{user_index}@snow.com",
+              :profile_id => 2,
+              :name => "user#{user_index}",
+              :state => 'active'})
+  end
+end
+
+And /^I am logged as "(.*)" with "(.*)"$/ do |user, pass|
   visit '/accounts/login'
-  fill_in 'user_login', :with => 'admin'
-  fill_in 'user_password', :with => 'aaaaaaaa'
+  fill_in 'user_login', :with => user
+  fill_in 'user_password', :with => pass
   click_button 'Login'
   if page.respond_to? :should
     page.should have_content('Login successful')
   else
     assert page.has_content?('Login successful')
   end
+end
+
+Given /^"(.*?)" has "(.*?)" article created$/ do |user, title|
+  Article.create!({
+      title:   title,
+      user_id: user
+    })
 end
 
 # Single-line step scoper
@@ -250,7 +269,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
     end
   end
 end
- 
+
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
@@ -264,8 +283,8 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')} 
-  
+  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+
   if actual_params.respond_to? :should
     actual_params.should == expected_params
   else
