@@ -632,3 +632,54 @@ describe Article do
   end
 end
 
+describe 'merge articles' do
+    it 'should return an article with text of both previous articles' do
+      
+     # first_article = Article.get_or_build_article
+     # second_article = Article.get_or_build_article
+      first_fake_article = Factory.build(:article, :allow_comments => 'false', :id => '1', :body => 'firstbody', :author => 'rohit')
+      second_fake_article = Factory.build(:article, :allow_comments => 'false', :id => '2', :body => 'secondbody', :author => 'avneesh')
+      #first_fake_article.stub(:id).and_return('1')
+      #first_fake_article.stub(:body).and_return("firstbody")
+     # first_fake_article.stub(:author).and_return("rohit")
+      #second_fake_article = mock('Article')
+     # second_fake_article.stub(:id).and_return('2')
+     # second_fake_article.stub(:body).and_return("secondbody")
+     # second_fake_article.stub(:author).and_return("avneesh")
+
+      Article.stub(:find_by_id).and_return(second_fake_article)
+
+      mergedArticle = first_fake_article.merge_articles('2')
+      mergedArticleContent =mergedArticle.body
+      expectedMergedContent = first_fake_article.body + '\n\n' + second_fake_article.body
+      expectedMergedContent.should == mergedArticleContent
+       #request 
+      #post :controller => "content_controller", :action => "merge", :currentarticleid => '1', :articletomergewithid => '2'
+    end
+    it 'should return a merged article with only one author from the two articles' do    
+      a = Factory.build(:article, :allow_comments => 'false', :id => '1', :body => 'firstbody', :author => 'rohit')
+      b = Factory.build(:article, :allow_comments => 'false', :id => '2', :body => 'secondbody', :author => 'avneesh')
+      Article.stub(:find_by_id).and_return(b)
+
+      mergedArticle = a.merge_articles(b.id)
+      mergedAuthor = mergedArticle.author
+      mergedAuthor.should == a.author or mergedAuthor.should == b.author
+    end
+    it 'should return comments from both original articles which point to the merged article' do
+      #a = Factory(:article, :author => 'Rohit')
+      a = Factory.build(:article, :allow_comments => 'true', :id => '1', :body => 'firstbody', :author => 'rohit')
+      b = Factory.build(:article, :allow_comments => 'true', :id => '2', :body => 'secondbody', :author => 'avneesh')
+      feedback1 = Factory.build(:comment, :article_id => '1', :body => "comment on article 1")
+      feedback2 = Factory.build(:comment, :article_id => '2', :body => "comment on article 2")
+      Article.stub(:find_by_id).and_return(b)
+      Comment.stub(:find_by_id).with(a.id).and_return(feedback1)
+      Comment.stub(:find_by_id).with(b.id).and_return(feedback2)
+      Comment.stub(:find).with(:all, :conditions => { :article_id => feedback1.article_id }).and_return([feedback1])
+      Comment.stub(:find).with(:all, :conditions => { :article_id => feedback2.article_id }).and_return([feedback2])
+      mergedArticle = a.merge_articles(b.id)
+      mergedId = mergedArticle.id
+      (feedback1.article_id).should == mergedId 
+      (feedback2.article_id).should == mergedId
+    end
+  end
+end

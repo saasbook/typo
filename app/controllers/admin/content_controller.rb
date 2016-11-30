@@ -11,6 +11,21 @@ class Admin::ContentController < Admin::BaseController
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
   end
 
+  def merge
+    @current_user = User.find_by_id(session['user_id'].to_i)
+    if @current_user.admin?
+      puts params[:current_article_id].to_i
+      puts (params[:merge_with])[:id].to_i
+      currentArticle = Article.find_by_id(params[:current_article_id].to_i)
+      articleToMergeWith = Article.find_by_id((params[:merge_with])[:id].to_i)
+
+      mergedArticle = currentArticle.merge_articles((params[:merge_with])[:id].to_i)
+      redirect_to :action => 'index' 
+    else
+      flash[:error] = "You are not an admin"
+    end
+  end
+
   def index
     @search = params[:search] ? params[:search] : {}
     
@@ -24,11 +39,13 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def new
+    @is_edit = false
     new_or_edit
   end
 
   def edit
     @article = Article.find(params[:id])
+    @is_edit = true
     unless @article.access_by? current_user
       redirect_to :action => 'index'
       flash[:error] = _("Error, you are not allowed to perform this action")
@@ -92,7 +109,7 @@ class Admin::ContentController < Admin::BaseController
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
 
     get_fresh_or_existing_draft_for_article
-    
+
     @article.attributes = params[:article]
     @article.published = false
     set_article_author
@@ -144,7 +161,7 @@ class Admin::ContentController < Admin::BaseController
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
-
+    @idOfCurrentArticle = @article.id
     @post_types = PostType.find(:all)
     if request.post?
       if params[:article][:draft]
@@ -166,11 +183,16 @@ class Admin::ContentController < Admin::BaseController
       set_article_author
       save_attachments
       
-      @article.state = "draft" if @article.draft
+      if @article.draft
+        @article.state = "draft"
+      else
+        @article.permalink = @article.stripped_title if @article.permalink.nil? or @article.permalink.empty?
+      end
 
       if @article.save
         destroy_the_draft unless @article.draft
         set_article_categories
+        set_shortened_url if @article.published
         set_the_flash
         redirect_to :action => 'index'
         return
@@ -180,6 +202,8 @@ class Admin::ContentController < Admin::BaseController
     @images = Resource.images_by_created_at.page(params[:page]).per(10)
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
+    
+    @current_user = User.find_by_id(session['user_id'].to_i)
     render 'new'
   end
 
@@ -226,6 +250,19 @@ class Admin::ContentController < Admin::BaseController
         @article.categories << cat
       end
     end
+  end
+
+  def set_shortened_url
+    # In a very short time, I'd like to have permalink modification generate a 301 redirect as well to
+    # So I set this up the big way now
+
+    return unless Redirect.find_by_to_path(@article.permalink_url).nil?
+
+    red = Redirect.new
+    red.from_path = red.shorten
+    red.to_path = @article.permalink_url
+    red.save
+    @article.redirects << red
   end
 
   def def_build_body
