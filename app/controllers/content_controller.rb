@@ -30,7 +30,4 @@ class ContentController < ApplicationController
     end
   end
 
-  def theme_layout
-    this_blog.current_theme.layout(self.action_name)
-  end
 end
