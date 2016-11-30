@@ -1,0 +1,20 @@
+<h3> Merge Articles </h3>
+<div class='merge_form'>
+
+  <%= form_tag({controller: "content", action: "merge"}, method: "post", class: "merge_form") %>
+  <%= error_messages_for 'merge' %>
+
+
+  <div class='clearfix'>
+    <label for="article_id"><%= _("Article ID") %></label>
+    <div class='input'>
+      <%= text_field :article, :id, name: "merge_with" %>
+      <%= hidden_field_tag session[:id]=@article.id%>
+    </div>
+  </div>
+
+  <div class='action'>
+    <%= submit_tag "Merge" %>
+  </div>
+
+</div>
