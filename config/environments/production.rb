@@ -28,7 +28,4 @@ TypoBlog::Application.configure do
   # config.threadsafe!
 
   Migrator.offer_migration_when_available            = true
-
-  config.logger = Logger.new(STDOUT)
-  config.logger.level = Logger.const_get(([ENV['LOG_LEVEL'].to_s.upcase, "INFO"] & %w[DEBUG INFO WARN ERROR FATAL UNKNOWN]).compact.first)
 end

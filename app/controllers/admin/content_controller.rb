@@ -6,6 +6,25 @@ class Admin::ContentController < Admin::BaseController
 
   cache_sweeper :blog_sweeper
 
+  def merge
+    edit_article = Article.find_by_id(params[:id])
+
+    if params[:id] == params[:merge_with]              # article cannot be merged to self
+      flash[:notice] = "An article cannot be merged with itself."
+      redirect_to :action => :index
+    elsif !edit_article                                # original article does not exist
+      flash[:notice] = "The original article does not exist."
+      redirect_to :action => :index
+    elsif !Article.find_by_id(params[:merge_with])     # desired article to merge does not exist
+      flash[:notice] = "The article you selected does not exist."
+      redirect_to :action => :edit, :id => params[:id]
+    else                                               # articles are different and both exist
+     edit_article.merge_with(params[:merge_with])
+     flash[:notice] = "Articles successfully merged."
+     redirect_to :action => :index
+    end
+  end
+
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
