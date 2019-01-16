@@ -1,4 +1,4 @@
-h1. About Typo
+h1. About Typo (Edited)
 
 Typo has been around since March of 2005 making it one of the oldest blogging platforms in Rails.
 
